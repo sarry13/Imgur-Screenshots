@@ -1,12 +1,14 @@
--- Create a Client-ID for your account: https://api.imgur.com/oauth2/addclient
 local _rendercap = render.Capture
 local _utilb64e = util.Base64Encode
 
-local CLIENT_ID = ""
+local CLIENT_ID = "" -- https://api.imgur.com/oauth2/addclient
 
 local capturing = false
 local inprogress = false
 local fr
+local Color = Color
+local surface = surface
+local quality_number = CreateClientConVar("imgur_quality", "90", true, false, "", "1", "100")
 function StartCapturing()
 	if fr then
 		return
@@ -40,17 +42,22 @@ function CaptureImage( startpos, endpos )
 		format = "jpeg",
 		h = disty,
 		w = distx,
-		quality = 90,
+		quality = quality_number:GetInt(),
 		x = v1x,
 		y = v1y
 	}
+	local data1 = ""
+	hook.Add("PostRenderVGUI", "ased", function()
+		data1 = render.Capture( capture )
+		hook.Remove("PostRenderVGUI", "ased")
+	end)
+	timer.Simple(0.1, function()
 	if capture.h <= 5 or capture.w <= 5 then
 		chat.AddText( Color( 255, 0, 0 ), "Upload failed - Image must be greater than 5x5 px" )
 		surface.PlaySound( "buttons/button11.wav" )
 		inprogress = false			
 		return
 	end
-	local data1 = render.Capture( capture )
 	if not data1 then
 		chat.AddText( Color( 255, 0, 0 ), "render.Capture has been overriden, attempting to bypass..."  )
 		data1 = _rendercap( capture )
@@ -120,6 +127,7 @@ function CaptureImage( startpos, endpos )
 	}
 	HTTP( tab )
 	chat.AddText( color_white, "Starting image upload (" .. distx .. "x" .. disty .. ")" )
+	end)
 end
 local cappin
 local startpos
