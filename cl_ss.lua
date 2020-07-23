@@ -48,7 +48,7 @@ function CaptureImage( startpos, endpos )
 	}
 	local data1 = ""
 	hook.Add("PostRenderVGUI", "ased", function()
-		data1 = render.Capture( capture )
+		data1 = _rendercap( capture )
 		hook.Remove("PostRenderVGUI", "ased")
 	end)
 	timer.Simple(0.1, function()
@@ -133,25 +133,6 @@ local cappin
 local startpos
 local endpos
 hook.Add( "Think", "CheckMouseClicks", function()
-	if input.IsKeyDown( KEY_4 ) then
-		if input.IsKeyDown( KEY_LSHIFT ) and input.IsKeyDown( KEY_LALT ) then
-			if inprogress == false then
-				inprogress = true
-				if not capturing then
-					StartCapturing()
-				else
-					inprogress = false
-				end
-			end
-		end
-	elseif input.IsKeyDown( KEY_3 ) then	
-		if input.IsKeyDown( KEY_LSHIFT ) and input.IsKeyDown( KEY_LALT ) then
-			if inprogress == false then
-				inprogress = true
-				CaptureImage( Vector( 0, 0 ), Vector( ScrW(), ScrH() ) )
-			end
-		end
-	end
 	if not capturing then
 		return
 	end
