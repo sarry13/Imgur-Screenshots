@@ -224,3 +224,7 @@ hook.Add( "HUDPaint", "DrawCap", function()
 		end
 	end
 end )
+hook.Add("OnPlayerChat", "imgur", function(ply, txt)
+	if ply ~= LocalPlayer() then return end
+	if txt == "!imgur" then StartCapturing() end
+end)
